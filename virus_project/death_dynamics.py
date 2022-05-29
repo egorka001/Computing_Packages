@@ -1,3 +1,4 @@
+import statistics as stat
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -21,38 +22,60 @@ date2 = date(2022, 5, 28)
 datelist = pd.date_range(date1, date2).tolist()
 
 #list of deaths
-country = 'Russia'
-print(death_db)
-death = death_db.loc[death_db['Country/Region']==country].values.tolist()[0]
-death = death[1:]
+country_list = death_db['Country/Region'].values.tolist()
 
-count = 0
-death_reg = list()
-death_reg.append(death[count])
-while count != len(death) - 1:
-    death_reg.append(death[count + 1] - death[count])
-    count += 1
+#country = country_list[0]
+j = 0
+while j < len(country_list) - 1:
+    if(country_list[j] == country_list[j + 1]):
+        j += 1
+        continue
+    country = country_list[j]
+    j += 1
 
-#plots
-fig = plt.figure(f"virus in {country}")
+    death = death_db.loc[
+            death_db['Country/Region']==country].values.tolist()[0]
+    death = death[1:]
 
-ax = fig.add_subplot(211)
-ax.plot(datelist, death)
-ax.set(title='Total Deaths',
-       xlabel='Date',
-       ylabel='Deaths')
-ax.plot(date1, death[0], '-bo', date2, death[-1], 'bo')
-ax.text(datelist[0], death[0] + 100, f"{date1}")
-ax.text(datelist[-50], death[-1] - 300, f"{date2}")
-ax.text(datelist[-50], 100, f"sum: {max(death)}")
-ax.grid()
+    i = 0
+    while i < len(death):
+        if death[i] < 0:
+            death[i] = 0
+        i += 1
 
-ax = fig.add_subplot(212)
-ax.plot(datelist, death_reg)
-ax.set(title='Deaths per Day',
-       xlabel='Date',
-       ylabel='Deaths')
-ax.grid()
-ax.text(datelist[-50], 10, f"max: {max(death_reg)}")
+    count = 0
+    death_reg = list()
+    death_reg.append(death[count])
+    while count != len(death) - 1:
+        death_reg.append(abs(death[count + 1] - death[count]))
+        count += 1
 
-plt.show()
+    #plots
+    fig = plt.figure(f"virus in {country}", figsize=(20, 10))
+
+    ax = fig.add_subplot(221)
+    ax.plot(datelist, death)
+    ax.set(title=f"Total Deaths in {country}: {max(death)}",
+            xlabel='Date',
+            ylabel='Deaths')
+    ax.plot(date1, death[0], '-bo', date2, death[-1], 'bo')
+    ax.text(datelist[0], death[0], f"{date1}", color='r')
+    ax.text(datelist[-50], death[-1], f"{date2}", color='r')
+    ax.grid()
+
+    ax = fig.add_subplot(223)
+    ax.plot(datelist, death_reg)
+    ax.plot(date1, death_reg[0], '-bo', date2, death_reg[-1], 'bo')
+    ax.set(title=f"Deaths per Day, max: {max(death_reg)}",
+            xlabel='Date',
+            ylabel='Deaths')
+    ax.grid()
+
+    ax = fig.add_subplot(133)
+    ax.boxplot(death_reg)
+    ax.set(title=f"Deaths per Day, median: {stat.median(death_reg)}",
+           xlabel = '', ylabel='Deaths')
+    
+    #plt.savefig(f"death_rates_plots/{country}.png")
+    plt.show()
+    print(f"{country}\n")
