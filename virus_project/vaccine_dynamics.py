@@ -175,7 +175,7 @@ while j < len(country_list):
     print(country)
     
     if set_norm == 0:
-        plt.savefig(f"vaccine_rates_plots/not_norm/{country}.png")
+        plt.savefig(f"vaccine_rates_cmp_plots/not_norm/{country}.png")
     if set_norm == 1:
-        plt.savefig(f"vaccine_rates_plots/norm/{country}.png")
+        plt.savefig(f"vaccine_rates_cmp_plots/norm/{country}.png")
     #plt.show()
