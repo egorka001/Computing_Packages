@@ -1,44 +1,19 @@
-x = linspace(-5, 5, 10000);
-y_1 = sin(x);
-y_2 = sin(2 * x);
-y_3 = sin(3 * x);
-y_4 = sin(4 * x);
+x = linspace(0, 2, 1000);
 
-subplot(2, 3, 1);
-plot(x, y_1, 'r');
-title('y = sin(x)');
-xlabel('x');
-ylabel('y');
-grid on;
+y = humps(x);
 
-subplot(2, 3, 2);
-plot(x, y_2, 'g');
-title('y = sin(2x)');
-xlabel('x');
-ylabel('y');
-grid on;
+hold on
+plot(x ,y);
 
-subplot(2, 3, 3);
-plot(x, y_3, 'b');
-title('y = sin(3x)');
-xlabel('x');
-ylabel('y');
-grid on;
+[ y_m, idx ] = max(y);
+x_m = x(idx);
 
-subplot(2, 3, 4);
-plot(x, y_4, 'y');
-title('y = sin(4x)');
-xlabel('x');
-ylabel('y');
-grid on;
+plot(x_m, y_m, '-o', 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
 
-subplot(2, 3, [5 6]);
-hold on;
-plot(x, y_1, 'r');
-plot(x, y_2, 'g');
-plot(x, y_3, 'b');
-plot(x, y_4, 'y');
-title('friends!');
-xlabel('time');
-ylabel('fun');
-grid on;
+for i = 1:1000
+    if y(i) > 20 & y(i) < 40
+        plot(x(i), y(i), '-o', 'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'g');
+    end
+end
+
+%ylim([20, 40]);
